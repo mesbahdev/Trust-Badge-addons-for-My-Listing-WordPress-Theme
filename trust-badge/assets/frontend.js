@@ -8,6 +8,12 @@
     var restRoot = window.TBFrontend.restRoot.replace(/\/$/, '');
     var nonce    = window.TBFrontend.nonce;
     var modalRoot = document.getElementById('tb-modal-root');
+    var embedScriptUrl = window.TBFrontend.embedScript || '';
+    var iframeBase = window.TBFrontend.iframeBase || '';
+
+    if (iframeBase && iframeBase.slice(-1) !== '/') {
+        iframeBase += '/';
+    }
 
     function ensureModalRoot(){
         if (!modalRoot) {
@@ -167,8 +173,17 @@
         var container = overlay.querySelector('.tb-modal__content');
         container.innerHTML = '<h2>' + wp.i18n.__('Trust Badge Embed', 'trust-badge') + '</h2>' +
             '<div class="tb-embed"><p>' + wp.i18n.__('Use the code below to embed your live trust badge.', 'trust-badge') + '</p>' +
-            '<textarea class="tb-embed__code" readonly></textarea>' +
-            '<button type="button" class="button button-secondary tb-copy">' + window.TBFrontend.copyLabel + '</button>' +
+            '<div class="tb-embed__group">' +
+                '<label>' + wp.i18n.__('Script embed', 'trust-badge') + '</label>' +
+                '<textarea class="tb-embed__code" data-type="script" readonly></textarea>' +
+                '<button type="button" class="button button-secondary tb-copy" data-target="script">' + window.TBFrontend.copyLabel + '</button>' +
+            '</div>' +
+            '<div class="tb-embed__group">' +
+                '<label>' + wp.i18n.__('Iframe fallback', 'trust-badge') + '</label>' +
+                '<textarea class="tb-embed__code tb-embed__code--compact" data-type="iframe" readonly></textarea>' +
+                '<button type="button" class="button button-secondary tb-copy" data-target="iframe">' + wp.i18n.__('Copy iframe code', 'trust-badge') + '</button>' +
+                '<p class="tb-embed__hint">' + wp.i18n.__('Use this option if script embeds are not supported by your site builder.', 'trust-badge') + '</p>' +
+            '</div>' +
             '<div class="tb-embed__meta"></div></div>';
 
         openModal(overlay);
@@ -176,26 +191,75 @@
         fetch(restRoot + '/requests/' + options.requestId, { headers: { 'X-WP-Nonce': nonce } })
             .then(function(res){ return res.ok ? res.json() : Promise.reject(); })
             .then(function(data){
-                var textarea = container.querySelector('.tb-embed__code');
+                var scriptField = container.querySelector('.tb-embed__code[data-type="script"]');
+                var iframeField = container.querySelector('.tb-embed__code[data-type="iframe"]');
                 var token = data.token;
-                var origin = window.location.origin;
-                var snippet = '<div data-tb-token="' + token + '"></div>\n<script async src="' + origin + '/wp-content/plugins/trust-badge/assets/embed.js"></script>';
-                textarea.value = snippet;
+                var scriptUrl = embedScriptUrl || (window.location.origin + '/wp-content/plugins/trust-badge/assets/embed.js');
+                var iframeUrlBase = iframeBase || (restRoot.replace(/\/$/, '') + '/embed/');
+                var scriptSnippet = '<div class="tb-trust-badge" data-tb-token="' + token + '"></div>\n<script async src="' + scriptUrl + '"></script>';
+                var iframeSnippet = '<iframe src="' + iframeUrlBase + token + '" width="320" height="140" loading="lazy" frameborder="0" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+
+                if (scriptField) {
+                    scriptField.value = scriptSnippet;
+                }
+
+                if (iframeField) {
+                    iframeField.value = iframeSnippet;
+                }
+
                 var meta = container.querySelector('.tb-embed__meta');
                 if (data.expires_at){
                     meta.textContent = wp.i18n.sprintf(wp.i18n.__('Valid until %s', 'trust-badge'), new Date(data.expires_at).toLocaleDateString());
                 }
             });
 
-        container.querySelector('.tb-copy').addEventListener('click', function(){
-            var textarea = container.querySelector('.tb-embed__code');
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                this.textContent = window.TBFrontend.copiedLabel;
-            } catch (e) {
-                window.prompt('Copy code:', textarea.value);
-            }
+        container.querySelectorAll('.tb-copy').forEach(function(button){
+            button.addEventListener('click', function(){
+                var target = button.getAttribute('data-target');
+                var textarea = container.querySelector('.tb-embed__code[data-type="' + target + '"]');
+
+                if (!textarea){
+                    return;
+                }
+
+                var value = textarea.value;
+                var originalText = button.textContent;
+
+                var markCopied = function(){
+                    button.textContent = window.TBFrontend.copiedLabel;
+                    button.disabled = true;
+                    setTimeout(function(){
+                        button.textContent = originalText;
+                        button.disabled = false;
+                    }, 2000);
+                };
+
+                var promptFallback = function(){
+                    window.prompt(wp.i18n.__('Copy this code manually:', 'trust-badge'), value);
+                };
+
+                if (navigator.clipboard && navigator.clipboard.writeText){
+                    navigator.clipboard.writeText(value).then(markCopied).catch(function(){
+                        textarea.select();
+                        try {
+                            document.execCommand('copy');
+                            markCopied();
+                        } catch (err) {
+                            promptFallback();
+                        }
+                    });
+                    return;
+                }
+
+                textarea.select();
+
+                try {
+                    document.execCommand('copy');
+                    markCopied();
+                } catch (err) {
+                    promptFallback();
+                }
+            });
         });
     }
 

@@ -14,6 +14,12 @@
 .tb-actions { margin-top: 1rem; }
 .tb-response { margin-top: 0.75rem; min-height: 1.25rem; }
 .tb-embed textarea { width: 100%; height: 120px; }
+.tb-embed__group { margin-top: 1rem; }
+.tb-embed__group:first-of-type { margin-top: 0.5rem; }
+.tb-embed__group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+.tb-embed__group .tb-copy { margin-top: 0.5rem; }
+.tb-embed__code--compact { height: 90px; }
+.tb-embed__hint { font-size: 12px; color: #6b7280; margin-top: 0.5rem; line-height: 1.4; }
 .tb-badge { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; background: #fff; border-radius: 14px; padding: 16px; border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 8px; max-width: 320px; }
 .tb-badge__header { display: flex; align-items: center; gap: 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; }
 .tb-badge__icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 999px; color: #fff; }

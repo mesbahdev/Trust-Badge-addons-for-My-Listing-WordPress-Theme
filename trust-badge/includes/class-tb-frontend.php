@@ -45,6 +45,8 @@ class TB_Frontend {
             'restRoot'   => esc_url_raw( rest_url( TB_Rest::NAMESPACE ) ),
             'copyLabel'  => __( 'Copy to clipboard', 'trust-badge' ),
             'copiedLabel'=> __( 'Copied!', 'trust-badge' ),
+            'embedScript'=> esc_url_raw( TB_PLUGIN_URL . 'assets/embed.js' ),
+            'iframeBase' => esc_url_raw( rest_url( TB_Rest::NAMESPACE . '/embed/' ) ),
         ] );
     }
 

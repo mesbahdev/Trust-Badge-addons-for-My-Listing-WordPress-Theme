@@ -9,4 +9,6 @@ This repository contains a WordPress plugin that implements the Trust Badge work
 - A dynamic badge renderer with both script and iframe delivery options backed by a secure token.
 - Cron automation to expire badges automatically when they reach their validity limit.
 
+The dashboard embed modal now surfaces both the script embed and an iframe fallback snippet, making it easy to use the badge in builders that restrict JavaScript embeds.
+
 To install, copy the `trust-badge` directory into your WordPress installation's `wp-content/plugins/` folder and activate **Trust Badge for MyListing** from the Plugins screen.
