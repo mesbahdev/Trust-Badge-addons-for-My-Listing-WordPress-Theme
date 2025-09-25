@@ -199,6 +199,46 @@
         });
     }
 
+    document.addEventListener('click', function(event){
+        var trigger = event.target.closest('a.tb-listing-action');
+
+        if (!trigger){
+            return;
+        }
+
+        var dataset = trigger.dataset || {};
+        var actionType = dataset.tbAction;
+
+        if (!actionType){
+            return;
+        }
+
+        event.preventDefault();
+
+        var args = {};
+
+        if (dataset.listingId){
+            args.listingId = parseInt(dataset.listingId, 10);
+        }
+
+        if (dataset.requestId){
+            args.requestId = parseInt(dataset.requestId, 10);
+        }
+
+        if (dataset.tbRenew){
+            args.renew = dataset.tbRenew !== '0';
+        }
+
+        if (actionType === 'request'){
+            renderRequestForm(args);
+            return;
+        }
+
+        if (actionType === 'embed' && args.requestId){
+            renderEmbedModal(args);
+        }
+    });
+
     window.tbOpenRequest = function(args){
         renderRequestForm(args || {});
     };
