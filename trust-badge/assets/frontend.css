@@ -1,0 +1,22 @@
+#tb-modal-root.tb-hidden { display: none; }
+#tb-modal-root { position: fixed; inset: 0; z-index: 10000; }
+.tb-modal-overlay { position: absolute; inset: 0; background: rgba(17, 24, 39, 0.55); display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.tb-modal { background: #fff; max-width: 480px; width: 100%; border-radius: 12px; box-shadow: 0 20px 45px rgba(0,0,0,0.18); position: relative; padding: 1.5rem; }
+.tb-modal__close { position: absolute; top: 0.5rem; right: 0.75rem; border: 0; background: transparent; font-size: 1.5rem; cursor: pointer; }
+.tb-modal__content h2 { margin-top: 0; }
+.tb-request-form label { display: block; margin-bottom: 0.75rem; font-weight: 600; }
+.tb-request-form input[type="text"],
+.tb-request-form input[type="email"] { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+.tb-upload-list ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.tb-upload-list li { display: flex; justify-content: space-between; align-items: center; background: #f3f4f6; padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.35rem; }
+.tb-upload-list .tb-remove { border: 0; background: transparent; font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.tb-consent { font-weight: 400; }
+.tb-actions { margin-top: 1rem; }
+.tb-response { margin-top: 0.75rem; min-height: 1.25rem; }
+.tb-embed textarea { width: 100%; height: 120px; }
+.tb-badge { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; background: #fff; border-radius: 14px; padding: 16px; border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 8px; max-width: 320px; }
+.tb-badge__header { display: flex; align-items: center; gap: 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; }
+.tb-badge__icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 999px; color: #fff; }
+.tb-badge__title { font-size: 18px; font-weight: 600; color: #111827; }
+.tb-badge__status { font-size: 14px; color: #1f2937; }
+.tb-badge__link { text-decoration: none; display: inline-block; }
