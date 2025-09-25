@@ -171,13 +171,20 @@ class TB_Frontend {
      * Return iframe markup.
      */
     public static function serve_embed_markup( WP_REST_Request $request ) {
-        $response = TB_Rest::badge_public( $request );
-        $data     = $response instanceof WP_REST_Response ? $response->get_data() : $response;
+        $response    = TB_Rest::badge_public( $request );
+        $data        = $response instanceof WP_REST_Response ? $response->get_data() : $response;
+        $status_code = $response instanceof WP_REST_Response ? $response->get_status() : 200;
 
-        if ( empty( $data['valid'] ) ) {
-            return rest_ensure_response( '<!-- invalid trust badge -->' );
+        $headers = [ 'Content-Type' => 'text/html; charset=' . get_option( 'blog_charset', 'utf-8' ) ];
+
+        if ( is_wp_error( $response ) ) {
+            return new WP_REST_Response( '<!-- trust badge error -->', 400, $headers );
         }
 
-        return rest_ensure_response( $data['badge'] );
+        if ( empty( $data['valid'] ) || empty( $data['badge'] ) ) {
+            return new WP_REST_Response( '<!-- invalid trust badge -->', 410, $headers );
+        }
+
+        return new WP_REST_Response( $data['badge'], $status_code, $headers );
     }
 }
