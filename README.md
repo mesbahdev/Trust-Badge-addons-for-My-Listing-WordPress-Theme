@@ -1,0 +1,1 @@
+# Trust-Badge-addons-for-My-Listing-WordPress-Theme
